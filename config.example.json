@@ -1,0 +1,7 @@
+{
+  "searchRoots": [
+    "\\\\fileserver.example.local\\Shared",
+    "C:\\Example\\Documents"
+  ],
+  "indexFile": "indice.csv"
+}
