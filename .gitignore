@@ -1,0 +1,26 @@
+# Índice gerado a partir das pastas (contém caminhos e nomes reais — nunca versionar)
+indice.csv
+indice.tmp.*.csv
+*.csv
+
+# Configuração local com caminhos reais (não versionar)
+config.json
+
+# Logs / saídas / temporários
+*.log
+logs/
+output/
+results/
+temp/
+*.tmp
+*.bak
+
+# Ferramentas locais de desenvolvimento
+.claude/
+CLAUDE.md
+.vscode/
+.idea/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
