@@ -1,5 +1,7 @@
 # Network Folder Search
 
+[![lint](https://github.com/enzo-going/network-folder-search/actions/workflows/lint.yml/badge.svg)](https://github.com/enzo-going/network-folder-search/actions/workflows/lint.yml)
+
 Ferramenta local em PowerShell para **buscar arquivos por nome** em uma ou mais
 pastas (locais ou compartilhamentos de rede). Ela varre as pastas configuradas
 **apenas para leitura**, gera um catálogo local (`indice.csv`) e permite buscas

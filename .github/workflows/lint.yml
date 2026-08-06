@@ -1,0 +1,44 @@
+name: lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  powershell:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Checa a sintaxe dos scripts
+        shell: powershell
+        run: |
+          $falhou = $false
+          Get-ChildItem -Recurse -Filter *.ps1 | ForEach-Object {
+            $erros = $null
+            [void][System.Management.Automation.Language.Parser]::ParseFile(
+              $_.FullName, [ref]$null, [ref]$erros)
+            if ($erros.Count -gt 0) {
+              $falhou = $true
+              Write-Host "::error file=$($_.Name)::$($erros.Count) erro(s) de sintaxe"
+              $erros | ForEach-Object { Write-Host "  $($_.Message)" }
+            } else {
+              Write-Host "OK  $($_.Name)"
+            }
+          }
+          if ($falhou) { exit 1 }
+
+      - name: PSScriptAnalyzer
+        shell: powershell
+        run: |
+          Install-Module PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck
+          $r = Invoke-ScriptAnalyzer -Path . -Recurse -Severity Error
+          if ($r) {
+            $r | Format-Table -AutoSize | Out-String | Write-Host
+            exit 1
+          }
+          Write-Host "Nenhum problema de severidade Error."
