@@ -85,3 +85,7 @@ reais do ambiente:
 
 Somente o código (`.ps1`/`.bat`), o `config.example.json` e este README são
 versionados.
+
+## Licença
+
+Distribuído sob a licença MIT. Veja [LICENSE](LICENSE).
