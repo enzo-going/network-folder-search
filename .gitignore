@@ -15,9 +15,6 @@ temp/
 *.tmp
 *.bak
 
-# Ferramentas locais de desenvolvimento
-.claude/
-CLAUDE.md
 .vscode/
 .idea/
 
