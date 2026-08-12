@@ -60,8 +60,11 @@ Ou duplo-clique em `Buscar.bat`. Digite parte do nome do arquivo:
 
 - Várias palavras = todas precisam aparecer no nome.
 - Acentos e maiúsculas são ignorados.
-- Prefixo `excel` restringe a planilhas (ex.: `excel fechamento`).
-- Comandos: `!r` atualiza o catálogo, `!s` sai.
+- **Filtro por tipo antes do termo**: `excel`, `planilha`, `word`, `doc`, `pdf`,
+  `imagem`, `foto`, `slide` ou `zip`. Exemplos: `excel fechamento`, `pdf contrato`.
+  Sozinho (`pdf`) lista todos os arquivos daquele tipo.
+- Comandos: `!p` passa a procurar também no caminho da pasta, `!r` atualiza o
+  catálogo, `!s` sai.
 
 Se `Out-GridView` estiver disponível, os resultados abrem em uma janela
 selecionável; ao selecionar um item, a pasta correspondente é aberta no
@@ -70,7 +73,10 @@ Explorer.
 ## Limitações
 
 - O catálogo é uma "foto" do momento da varredura; rode `Atualizar-Indice.ps1`
-  para refletir mudanças.
+  para refletir mudanças. Se a varredura falhar em alguma pasta ou devolver menos
+  da metade dos arquivos do catálogo atual, o catálogo antigo é **mantido** e o
+  resultado incompleto vai para `indice.parcial.csv` — uma queda de rede no meio
+  da varredura não derruba a busca.
 - A busca é por **nome de arquivo**, não pelo conteúdo.
 - Pontos de junção/links são ignorados para evitar loops.
 
