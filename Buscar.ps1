@@ -30,16 +30,12 @@ $grupos = [ordered]@{
 }
 
 # --- remove acentos e caixa para busca "esperta" ---
-function Normalizar([string]$t) {
-    if (-not $t) { return '' }
-    $n = $t.Normalize([Text.NormalizationForm]::FormD)
-    $sb = New-Object Text.StringBuilder
-    foreach ($c in $n.ToCharArray()) {
-        if ([Globalization.CharUnicodeInfo]::GetUnicodeCategory($c) -ne 'NonSpacingMark') {
-            [void]$sb.Append($c)
-        }
-    }
-    return $sb.ToString().ToLowerInvariant()
+# Aceita um texto ou uma lista inteira. Com a lista, o .NET normaliza tudo de
+# uma vez: o laco caractere a caractere que existia aqui rodava em cada busca
+# e levava ~35 s num catalogo de 120 mil arquivos.
+function Normalizar($t) {
+    if ($null -eq $t) { return '' }
+    return ($t.Normalize([Text.NormalizationForm]::FormD) -replace '\p{Mn}', '').ToLowerInvariant()
 }
 
 # --- garante que o indice exista ---
@@ -53,8 +49,15 @@ if (-not (Test-Path -LiteralPath $indice)) {
 }
 
 function Carregar {
-    $script:dados = Import-Csv -LiteralPath $indice
+    $script:dados = @(Import-Csv -LiteralPath $indice)
     $script:idade = (Get-Date) - (Get-Item $indice).LastWriteTime
+    # Nome e caminho ja sem acento, na mesma ordem de $dados: a busca so compara.
+    $script:nomesN    = [string[]]@()
+    $script:caminhosN = [string[]]@()
+    if ($script:dados.Count -gt 0) {
+        $script:nomesN    = [string[]]@(Normalizar $script:dados.Nome)
+        $script:caminhosN = [string[]]@(Normalizar $script:dados.Caminho)
+    }
 }
 Carregar
 
@@ -120,12 +123,18 @@ while ($true) {
 
     if ($termos.Count -eq 0 -and -not $extsFiltro) { continue }
 
-    $res = $dados | Where-Object {
-        if ($extsFiltro -and $_.Ext -notin $extsFiltro) { return $false }
-        $alvo = if ($buscarNoCaminho) { Normalizar ($_.Caminho) } else { Normalizar ($_.Nome) }
-        foreach ($t in $termos) { if ($alvo -notlike "*$t*") { return $false } }
-        return $true
-    } | Sort-Object -Property Modificado -Descending   # 'yyyy-MM-dd HH:mm' ordena como texto
+    # Contains em vez de -like: colchete digitado ("[final]") e texto literal.
+    # Com -like ele virava curinga e trazia qualquer nome com f, i, n, a ou l.
+    $alvos = if ($buscarNoCaminho) { $script:caminhosN } else { $script:nomesN }
+    $res = for ($i = 0; $i -lt $alvos.Length; $i++) {
+        $item = $script:dados[$i]
+        if ($extsFiltro -and $item.Ext -notin $extsFiltro) { continue }
+        $alvo = $alvos[$i]
+        $ok = $true
+        foreach ($t in $termos) { if (-not $alvo.Contains($t)) { $ok = $false; break } }
+        if ($ok) { $item }
+    }
+    $res = $res | Sort-Object -Property Modificado -Descending   # 'yyyy-MM-dd HH:mm' ordena como texto
 
     $n = @($res).Count
     if ($n -eq 0) {

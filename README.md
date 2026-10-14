@@ -58,7 +58,8 @@ alguns minutos, dependendo do volume de arquivos.
 
 Ou duplo-clique em `Buscar.bat`. Digite parte do nome do arquivo:
 
-- Várias palavras = todas precisam aparecer no nome.
+- Várias palavras = todas precisam aparecer no nome. O texto é procurado como
+  está: `[`, `*` e `?` não são curingas.
 - Acentos e maiúsculas são ignorados.
 - **Filtro por tipo antes do termo**: `excel`, `planilha`, `word`, `doc`, `pdf`,
   `imagem`, `foto`, `slide` ou `zip`. Exemplos: `excel fechamento`, `pdf contrato`.
