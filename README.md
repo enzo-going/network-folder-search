@@ -77,7 +77,9 @@ Explorer.
   para refletir mudanças. Se a varredura falhar em alguma pasta ou devolver menos
   da metade dos arquivos do catálogo atual, o catálogo antigo é **mantido** e o
   resultado incompleto vai para `indice.parcial.csv` — uma queda de rede no meio
-  da varredura não derruba a busca.
+  da varredura não derruba a busca. Nesse caso o script sai com código **2**
+  (configuração ausente: **1**), então uma tarefa agendada aparece como falha no
+  Agendador em vez de "sucesso". A próxima atualização completa apaga o parcial.
 - A busca é por **nome de arquivo**, não pelo conteúdo.
 - Pontos de junção/links são ignorados para evitar loops.
 

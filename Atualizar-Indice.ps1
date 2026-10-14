@@ -14,14 +14,14 @@ $ErrorActionPreference = 'SilentlyContinue'
 $configPath = Join-Path $PSScriptRoot 'config.json'
 if (-not (Test-Path -LiteralPath $configPath)) {
     Write-Warning "Configuracao ausente. Copie 'config.example.json' para 'config.json' e ajuste 'searchRoots'."
-    return
+    exit 1
 }
 $config    = Get-Content -LiteralPath $configPath -Raw | ConvertFrom-Json
 $pastas    = @($config.searchRoots)
 $indexFile = if ($config.indexFile) { $config.indexFile } else { 'indice.csv' }
 if (-not $pastas -or $pastas.Count -eq 0) {
     Write-Warning "Defina ao menos uma pasta em 'searchRoots' no config.json."
-    return
+    exit 1
 }
 
 # --- Pastas a IGNORAR (lixo tecnico que so atrapalha a busca). Edite a vontade. ---
@@ -130,13 +130,18 @@ try {
         Write-Warning "Catalogo ANTIGO mantido: $motivo."
         Write-Warning "O resultado desta varredura ficou em 'indice.parcial.csv' para conferencia."
         Write-Warning "Rode de novo com a rede estavel; nada foi perdido."
-        return
+        # Codigo diferente de zero para o Agendador de Tarefas mostrar a falha
+        # (com 0 o "Ultimo resultado" dizia sucesso e o catalogo envelhecia calado).
+        exit 2
     }
 
     if (Test-Path -LiteralPath $destino) {
         Copy-Item -LiteralPath $destino -Destination $backup -Force
     }
     Move-Item -LiteralPath $tmp -Destination $destino -Force -ErrorAction Stop
+    # O parcial de uma falha anterior ja nao vale: sem isto o Buscar avisava
+    # "atualizacao incompleta" para sempre, mesmo depois de atualizacoes boas.
+    if (Test-Path -LiteralPath $parcial) { Remove-Item -LiteralPath $parcial -Force }
 }
 finally {
     # Nao deixa lixo para tras se algo estourar no meio do caminho.
