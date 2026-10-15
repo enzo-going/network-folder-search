@@ -3,12 +3,14 @@
 Pull requests são bem-vindos. Para mudanças grandes, abra uma issue antes para
 discutir o que você pretende alterar.
 
-Antes de abrir o PR:
+Antes de abrir o PR, rode no Windows PowerShell 5.1 (o mesmo do CI):
 
-```bash
-python -m unittest discover -s tests
-python -m compileall battle_simulator tests
+```powershell
+.\tests\Testar-Atualizacao.ps1
+Install-Module PSScriptAnalyzer -Scope CurrentUser   # uma vez só
+Invoke-ScriptAnalyzer -Path . -Recurse -Severity Error
 ```
 
-Convenção de idioma: o código-fonte mantém identificadores em inglês (`attack`,
-`Soldier`, `BalancedBot`); documentação e interface web ficam em pt-BR.
+Convenções: tudo em pt-BR, inclusive nomes de funções e variáveis (`Percorrer`,
+`$pastas`). Os `.ps1` ficam em ASCII, sem acento, porque o PowerShell 5.1 lê
+arquivo sem BOM na página de código do sistema.
