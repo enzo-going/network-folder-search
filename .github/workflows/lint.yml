@@ -1,4 +1,4 @@
-name: lint
+name: ci
 
 on:
   push:
@@ -46,3 +46,15 @@ jobs:
             exit 1
           }
           Write-Host "Nenhum problema de severidade Error."
+
+  testes:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      # Roda o Atualizar-Indice.ps1 numa arvore de pastas temporaria e confere
+      # o catalogo, os codigos de saida e a protecao contra varredura incompleta.
+      - name: Testa a atualizacao do catalogo
+        shell: powershell
+        run: .\tests\Testar-Atualizacao.ps1

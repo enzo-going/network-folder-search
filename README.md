@@ -1,6 +1,6 @@
 # Network Folder Search
 
-[![lint](https://github.com/enzo-going/network-folder-search/actions/workflows/lint.yml/badge.svg)](https://github.com/enzo-going/network-folder-search/actions/workflows/lint.yml)
+[![ci](https://github.com/enzo-going/network-folder-search/actions/workflows/lint.yml/badge.svg)](https://github.com/enzo-going/network-folder-search/actions/workflows/lint.yml)
 
 Ferramenta local em PowerShell para **buscar arquivos por nome** em uma ou mais
 pastas (locais ou compartilhamentos de rede). Ela varre as pastas configuradas
@@ -82,6 +82,18 @@ Explorer.
   Agendador em vez de "sucesso". A próxima atualização completa apaga o parcial.
 - A busca é por **nome de arquivo**, não pelo conteúdo.
 - Pontos de junção/links são ignorados para evitar loops.
+
+## Testes
+
+```powershell
+.\tests\Testar-Atualizacao.ps1
+```
+
+Roda o `Atualizar-Indice.ps1` de verdade numa árvore de pastas criada no TEMP
+(nenhuma pasta real é tocada) e confere o que está descrito acima: quais
+arquivos entram no catálogo, os códigos de saída 1 e 2, o catálogo antigo
+mantido quando a varredura vem incompleta e o parcial apagado na atualização
+seguinte. O CI roda o mesmo script a cada push.
 
 ## Segurança / o que NÃO versionar
 
