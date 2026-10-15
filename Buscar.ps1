@@ -50,7 +50,7 @@ if (-not (Test-Path -LiteralPath $indice)) {
 
 function Carregar {
     $script:dados = @(Import-Csv -LiteralPath $indice)
-    $script:idade = (Get-Date) - (Get-Item $indice).LastWriteTime
+    $script:idade = (Get-Date) - (Get-Item -LiteralPath $indice).LastWriteTime
     # Nome e caminho ja sem acento, na mesma ordem de $dados: a busca so compara.
     $script:nomesN    = [string[]]@()
     $script:caminhosN = [string[]]@()
